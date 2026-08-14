@@ -30,12 +30,25 @@ jobs:
 
         steps:
             - name: Checkout code
-              run: echo "hello from second workflowsssss"
+              uses: actions/checkout@v4
             - name: Setup JDK
-              run: echo "Environment $APP_ENV"
+              uses: actions/setup-java@v5
+              with:
+                distribution: temurin
+                java-version: '21'
             - name: Build JAR for docker
-              run: echo "file created successfully" 
+              working-directory: C:/Users/avira/Desktop/RESUME/codes/docker/Full-Stack-AI-DevOps-Masterclass/docker/app1-hello/springboot/hello-spring
+              run: mcn -B clean package -DskipTests
             - name: login to docker
-              run: echo ""
+              uses: docker/login-action@v4
+              with:
+                username: ${{ secrets.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_PASSWORD }}
             - name: build and push docker image
-              run: echo ""
+              uses: docker/build-push-action@v7
+              with:
+                context: C:/Users/avira/Desktop/RESUME/codes/docker/Full-Stack-AI-DevOps-Masterclass/docker/app1-hello/springboot/hello-spring
+                push: true
+                tags: |
+                    ${{ secrets.DOCKER_USERNAME }}/hello-spring:latest
+                    ${{ secrets.DOCKER_USERNAME }}/hello-spring:{{github.sha}}
