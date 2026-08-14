@@ -17,13 +17,13 @@ jobs:
                 distribution: temurin
                 java-version: '21'
             - name: Build and test
-              working-directory: C:/Users/avira/Desktop/RESUME/codes/docker/Full-Stack-AI-DevOps-Masterclass/docker/app1-hello/springboot/hello-spring
+              working-directory: docker/app1-hello/springboot/hello-spring
               run: mvn -B clean verify
             - name: upload_test_reports
               uses: actions/upload-artifact@v7
               with:
                   name: test-reports
-                  path: C:/Users/avira/Desktop/RESUME/codes/docker/Full-Stack-AI-DevOps-Masterclass/docker/app1-hello/springboot/hello-spring/target/surefire-reports
+                  path: docker/app1-hello/springboot/hello-spring/target/surefire-reports
     docker-build-push:
         runs-on: ubuntu-latest
         needs: build-test
@@ -37,8 +37,8 @@ jobs:
                 distribution: temurin
                 java-version: '21'
             - name: Build JAR for docker
-              working-directory: C:/Users/avira/Desktop/RESUME/codes/docker/Full-Stack-AI-DevOps-Masterclass/docker/app1-hello/springboot/hello-spring
-              run: mcn -B clean package -DskipTests
+              working-directory: docker/app1-hello/springboot/hello-spring
+              run: mvn -B clean package -DskipTests
             - name: login to docker
               uses: docker/login-action@v4
               with:
@@ -47,9 +47,9 @@ jobs:
             - name: build and push docker image
               uses: docker/build-push-action@v7
               with:
-                context: C:/Users/avira/Desktop/RESUME/codes/docker/Full-Stack-AI-DevOps-Masterclass/docker/app1-hello/springboot/hello-spring
+                context: docker/app1-hello/springboot/hello-spring
                 push: true
                 tags: |
                     ${{ secrets.DOCKER_USERNAME }}/hello-spring:latest
-                    ${{ secrets.DOCKER_USERNAME }}/hello-spring:{{github.sha}}
-                    ${{ secrets.DOCKER_USERNAME }}/hello-spring:{{github.ref_name}}
+                    ${{ secrets.DOCKER_USERNAME }}/hello-spring:${{ github.sha }}
+                    ${{ secrets.DOCKER_USERNAME }}/hello-spring:${{ github.ref_name }}
